@@ -63,7 +63,6 @@ pub fn cvlr_invoke_transfer_checked(
 ) -> ProgramResult {
     cvlr_assert!(account_infos.len() == 4);
     cvlr_assert!(instruction.data.len() > 0);
-    cvlr_assert!(instruction.program_id == spl_token::id());
     let src_info = &account_infos[0];
     let dst_info = &account_infos[2];
     let authority_info = &account_infos[3];
@@ -104,7 +103,7 @@ pub fn process_transfer_token_3(
             .try_into()
             .expect("Invalid slice length"),
     );
-    let instruction = cvlr_transfer_checked(
+    let instruction = transfer_checked(
         token_program.key,
         from.key,
         mint.key,
@@ -142,51 +141,4 @@ pub fn rule_to_compile_transfer_token() {
     cvlr_assert!(*token_program.key == spl_token::id());
     cvlr_assert!(from_wallet_amount_post == from_wallet_amount_pre - amount);
     cvlr_assert!(to_wallet_amount_post == to_wallet_amount_pre + amount);
-}
-
-#[inline(never)]
-#[cvlr::early_panic]
-pub fn cvlr_transfer_checked(
-    token_program_id: &Pubkey,
-    _source_pubkey: &Pubkey,
-    _mint_pubkey: &Pubkey,
-    _destination_pubkey: &Pubkey,
-    _authority_pubkey: &Pubkey,
-    _signer_pubkeys: &[&Pubkey],
-    amount: u64,
-    decimals: u8,
-) -> Result<Instruction, ProgramError> {
-    spl_token::check_program_account(token_program_id)?;
-    let data =
-        spl_token::instruction::TokenInstruction::TransferChecked { amount, decimals }.pack();
-
-    let accounts = vec![];
-    // let mut accounts = Vec::with_capacity(4 + signer_pubkeys.len());
-    // accounts.push(AccountMeta::new(*source_pubkey, false));
-    // accounts.push(AccountMeta::new_readonly(*mint_pubkey, false));
-    // accounts.push(AccountMeta::new(*destination_pubkey, false));
-    // accounts.push(AccountMeta::new_readonly(
-    //     *authority_pubkey,
-    //     signer_pubkeys.is_empty(),
-    // ));
-    // for signer_pubkey in signer_pubkeys.iter() {
-    //     accounts.push(AccountMeta::new_readonly(**signer_pubkey, true));
-    // }
-
-    // cvlr_assume!(*token_program_id == spl_token::id());
-    let mut pubkey = Pubkey::new(&[0u8; 32]);
-    unsafe {
-        // Get a mutable pointer to the first byte
-        let ptr = &mut pubkey as *mut Pubkey as *mut u64;
-        // Write u64s directly
-        *ptr.add(0) = 1u64;
-        *ptr.add(1) = 2u64;
-        *ptr.add(2) = 3u64;
-        *ptr.add(3) = 4u64;
-    }
-    Ok(Instruction {
-        program_id: pubkey,
-        accounts,
-        data,
-    })
 }
