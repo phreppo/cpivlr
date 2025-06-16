@@ -34,7 +34,7 @@ macro_rules! cvlr_solana_init {
     ($wrapper_name:ident) => {
         fn $wrapper_name() {
             use cpivlr::*;
-            process_transfer_token_3();
+            rule_to_compile_transfer_token();
         }
     };
 }
