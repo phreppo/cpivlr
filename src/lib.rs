@@ -31,10 +31,6 @@ pub fn cvlr_invoke_transfer_checked(
 
 #[macro_export]
 macro_rules! cvlr_solana_init {
-    () => {
-        cvlr_solana_init!("cvlr_solana_init");
-    };
-
     ($wrapper_name:ident) => {
         fn $wrapper_name() {
             use cpivlr::*;
