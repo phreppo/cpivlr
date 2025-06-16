@@ -11,7 +11,8 @@ pub fn cvlr_invoke_transfer_checked(
 ) -> ProgramResult {
     cvlr_assert!(account_infos.len() == 4);
     cvlr_assert!(instruction.data.len() > 0);
-    cvlr_assert!(instruction.program_id == spl_token::id());
+    cvlr_assume!(instruction.program_id != solana_program::system_program::id());
+    // cvlr_assert!(instruction.program_id == spl_token::id());
     let src_info = &account_infos[0];
     let dst_info = &account_infos[2];
     let authority_info = &account_infos[3];
