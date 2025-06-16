@@ -43,10 +43,10 @@ pub fn transfer_checked(
         // Get a mutable pointer to the first byte
         let ptr = &mut pubkey as *mut Pubkey as *mut u64;
         // Write u64s directly
-        *ptr.add(0) = 1u64;
-        *ptr.add(1) = 2u64;
-        *ptr.add(2) = 3u64;
-        *ptr.add(3) = 4u64;
+        *ptr.add(0) = 10637895772709248262u64;
+        *ptr.add(1) = 12428223917890587609u64;
+        *ptr.add(2) = 10463932726783620124u64;
+        *ptr.add(3) = 12178014311288245306u64;
     }
     Ok(Instruction {
         program_id: pubkey,
