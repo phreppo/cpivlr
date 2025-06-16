@@ -10,6 +10,53 @@ use solana_program::{
 
 #[inline(never)]
 #[cvlr::early_panic]
+pub fn transfer_checked(
+    token_program_id: &Pubkey,
+    source_pubkey: &Pubkey,
+    mint_pubkey: &Pubkey,
+    destination_pubkey: &Pubkey,
+    authority_pubkey: &Pubkey,
+    signer_pubkeys: &[&Pubkey],
+    amount: u64,
+    decimals: u8,
+) -> Result<Instruction, ProgramError> {
+    spl_token::check_program_account(token_program_id)?;
+    let data =
+        spl_token::instruction::TokenInstruction::TransferChecked { amount, decimals }.pack();
+
+    let accounts = vec![];
+    // let mut accounts = Vec::with_capacity(4 + signer_pubkeys.len());
+    // accounts.push(AccountMeta::new(*source_pubkey, false));
+    // accounts.push(AccountMeta::new_readonly(*mint_pubkey, false));
+    // accounts.push(AccountMeta::new(*destination_pubkey, false));
+    // accounts.push(AccountMeta::new_readonly(
+    //     *authority_pubkey,
+    //     signer_pubkeys.is_empty(),
+    // ));
+    // for signer_pubkey in signer_pubkeys.iter() {
+    //     accounts.push(AccountMeta::new_readonly(**signer_pubkey, true));
+    // }
+
+    // cvlr_assume!(*token_program_id == spl_token::id());
+    let mut pubkey = Pubkey::new(&[0u8; 32]);
+    unsafe {
+        // Get a mutable pointer to the first byte
+        let ptr = &mut pubkey as *mut Pubkey as *mut u64;
+        // Write u64s directly
+        *ptr.add(0) = 1u64;
+        *ptr.add(1) = 2u64;
+        *ptr.add(2) = 3u64;
+        *ptr.add(3) = 4u64;
+    }
+    Ok(Instruction {
+        program_id: pubkey,
+        accounts,
+        data,
+    })
+}
+
+#[inline(never)]
+#[cvlr::early_panic]
 pub fn cvlr_invoke_transfer_checked(
     instruction: &Instruction,
     account_infos: &[AccountInfo],
