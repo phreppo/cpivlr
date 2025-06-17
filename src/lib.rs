@@ -57,7 +57,6 @@ pub fn transfer_checked(
 
 #[inline(never)]
 #[cvlr::early_panic]
-#[no_mangle]
 pub fn cvlr_invoke_transfer_checked(
     instruction: &Instruction,
     account_infos: &[AccountInfo],
